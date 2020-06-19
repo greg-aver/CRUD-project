@@ -18,9 +18,11 @@ public class HibernateSessionFactory {
     }
 
     private static SessionFactory createSessionFactory() {
-        // .configure() - reading properties from hibernate.cfg.xml
-        Configuration configuration = new Configuration().configure();
+//        .configure() - reading properties from hibernate.cfg.xml
+//        Configuration configuration = new Configuration().configure();
+        Configuration configuration = new Configuration();
         configuration.addAnnotatedClass(User.class);
+        configuration.setProperty();
         StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties());
         return configuration.buildSessionFactory(builder.build());
     }
