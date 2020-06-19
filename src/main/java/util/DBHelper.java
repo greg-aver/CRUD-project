@@ -1,9 +1,7 @@
 package util;
 
 import DAO.UserHibernateDAO;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Driver;
@@ -14,14 +12,14 @@ import java.util.Properties;
 import java.sql.Connection;
 
 public class DBHelper {
-    private DBHelper dbHelper;
-    String url;
-    String username;
-    String password;
-    String driver;
-    String dialect;
-    String hbm2ddl;
-    String show_sql;
+    private static DBHelper dbHelper;
+    private String url;
+    private String username;
+    private String password;
+    private String driver;
+    private String dialect;
+    private String hbm2ddl;
+    private String show_sql;
 
     private DBHelper() {
         Properties properties = new Properties();
@@ -42,7 +40,7 @@ public class DBHelper {
     }
 
 
-    public DBHelper getDbHelper() {
+    public static DBHelper getDbHelper() {
         if (dbHelper == null) {
             dbHelper = new DBHelper();
         }
@@ -74,6 +72,7 @@ public class DBHelper {
     public Configuration getConfiguration() {
         Configuration configuration = new Configuration();
         configuration.addAnnotatedClass(UserHibernateDAO.class);
+
         configuration.setProperty("hibernate.dialect", dialect)
                 .setProperty("hibernate.connection.driver_class", driver)
                 .setProperty("hibernate.connection.url", url)
