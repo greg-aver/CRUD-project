@@ -1,26 +1,54 @@
 package service;
 
 import DAO.UserDAO;
-import DAO.UserHibernateDAO;
+import factory.RealizationHibernateDAO;
+import factory.RealizationJdbcDAO;
+import factory.UserDAOFactory;
 import model.User;
-import util.DBConfig;
-
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.List;
-
-import DAO.UserJdbcDAO;
+import java.util.Properties;
 
 public class UserService {
     private UserDAO<User> userDAO;
+    private UserDAOFactory userDAOFactory;
     private static UserService service;
-    private UserJdbcDAO userJdbcDAO = UserJdbcDAO.getUserJdbcDAO(DBConfig.getMysqlConnection());
-    private UserHibernateDAO userHibernateDAO = new UserHibernateDAO();
-    public List<User> getAllUsers() {
-        return userJdbcDAO.getAll();
+
+    enum typeDAO {
+        JDBC,
+        Hibernate
     }
 
+    public List<User> getAllUsers() {
+        return userDAO.getAll();
+    }
+
+
     private UserService() {
-//        userDAO = userJdbcDAO;
-        userDAO = userHibernateDAO;
+        initialize();
+        userDAO = userDAOFactory.createDAO();
+    }
+
+
+    public void initialize() {
+        Properties properties = new Properties();
+        try (FileInputStream inputStream = new FileInputStream("db.properties")) {
+            properties.load(inputStream);
+            typeDAO daotype = typeDAO.valueOf(properties.getProperty("daotype"));
+            switch (daotype) {
+                case JDBC:
+                    userDAOFactory = new RealizationJdbcDAO();
+                    break;
+                case Hibernate:
+                    userDAOFactory = new RealizationHibernateDAO();
+                    break;
+            }
+
+        } catch (IOException e) {
+            e.getStackTrace();
+            new IOException();
+        }
     }
 
     public static UserService getService() {
