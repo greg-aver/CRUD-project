@@ -2,8 +2,8 @@ package util;
 
 import DAO.UserHibernateDAO;
 import org.hibernate.cfg.Configuration;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -13,26 +13,21 @@ import java.sql.Connection;
 
 public class DBHelper {
     private static DBHelper dbHelper;
-    private String url;
-    private String username;
-    private String password;
-    private String driver;
-    private String dialect;
-    private String hbm2ddl;
-    private String show_sql;
+    private DBConfig config = new DBConfig();
 
     private DBHelper() {
         Properties properties = new Properties();
-        try (FileInputStream fileInputStream = new FileInputStream("db.properties")) {
-            properties.load(fileInputStream);
 
-            url = properties.getProperty("url");
-            username = properties.getProperty("username");
-            password = properties.getProperty("password");
-            driver = properties.getProperty("driver");
-            dialect = properties.getProperty("dialect");
-            hbm2ddl = properties.getProperty("hbm2ddl");
-            show_sql = properties.getProperty("show_sql");
+        try (InputStream inputStream = DBHelper.class.getClassLoader().getResourceAsStream("db.properties");) {
+            properties.load(inputStream);
+
+            config.setUrl(properties.getProperty("url"));
+            config.setUsername(properties.getProperty("username"));
+            config.setPassword(properties.getProperty("password"));
+            config.setDriver(properties.getProperty("driver"));
+            config.setDialect(properties.getProperty("dialect"));
+            config.setHbm2ddl(properties.getProperty("hbm2ddl"));
+            config.setShow_sql(properties.getProperty("show_sql"));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -49,18 +44,19 @@ public class DBHelper {
 
     public Connection getConnection() {
         try {
-            DriverManager.registerDriver((Driver) Class.forName(driver).newInstance());
+            DriverManager.registerDriver((Driver) Class.forName(config.getDriver()).newInstance());
             StringBuilder urlFull = new StringBuilder();
             urlFull.
-                    append(url).
+                    append(config.getUrl()).
+                    append("&").
                     append("user=").
-                    append(username).
+                    append(config.getUsername()).
                     append("&").
                     append("password=").
-                    append(password);
+                    append(config.getPassword());
 
             System.out.println("URL: " + urlFull + "\n");
-            Connection connection = DriverManager.getConnection(url.toString());
+            Connection connection = DriverManager.getConnection(urlFull.toString());
             return connection;
         } catch (SQLException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -73,13 +69,13 @@ public class DBHelper {
         Configuration configuration = new Configuration();
         configuration.addAnnotatedClass(UserHibernateDAO.class);
 
-        configuration.setProperty("hibernate.dialect", dialect)
-                .setProperty("hibernate.connection.driver_class", driver)
-                .setProperty("hibernate.connection.url", url)
-                .setProperty("hibernate.connection.username", username)
-                .setProperty("hibernate.connection.password", password)
-                .setProperty("hibernate.show_sql", show_sql)
-                .setProperty("hibernate.hbm2ddl.auto", hbm2ddl);
+        configuration.setProperty("hibernate.dialect", config.getDialect())
+                .setProperty("hibernate.connection.driver_class", config.getDriver())
+                .setProperty("hibernate.connection.url", config.getUrl())
+                .setProperty("hibernate.connection.username", config.getUsername())
+                .setProperty("hibernate.connection.password", config.getPassword())
+                .setProperty("hibernate.show_sql", config.getShow_sql())
+                .setProperty("hibernate.hbm2ddl.auto", config.getHbm2ddl());
 
         return configuration;
     }

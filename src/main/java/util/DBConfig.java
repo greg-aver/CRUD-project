@@ -1,29 +1,18 @@
 package util;
 
-import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Setter
+@NoArgsConstructor
+@Getter
 public class DBConfig {
-    public static Connection getMysqlConnection() {
-        try {
-            DriverManager.registerDriver((Driver) Class.forName("com.mysql.cj.jdbc.Driver").newInstance());
-            StringBuilder url = new StringBuilder();
-            url.
-                    append("jdbc:mysql://").        //db type
-                    append("localhost:").           //host name
-                    append("3306/").                //port
-                    append("user_database?").          //db name
-                    append("user=root&").          //login
-                    append("password=password&").       //password
-                    append("serverTimezone=Europe/Moscow&useSSL=false");
-            System.out.println("URL: " + url + "\n");
-            Connection connection = DriverManager.getConnection(url.toString());
-            return connection;
-        } catch (SQLException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-            e.printStackTrace();
-            throw new IllegalStateException();
-        }
-    }
+    private String url;
+    private String username;
+    private String password;
+    private String driver;
+    private String dialect;
+    private String hbm2ddl;
+    private String show_sql;
 }

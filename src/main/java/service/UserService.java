@@ -7,6 +7,7 @@ import factory.UserDAOFactory;
 import model.User;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
 
@@ -33,9 +34,17 @@ public class UserService {
 
     public void initialize() {
         Properties properties = new Properties();
-        try (FileInputStream inputStream = new FileInputStream("db.properties")) {
+        /* 1. InputStream inputStream = FetchData.class.getClassLoader().getResourceAsStream("db.properties");
+        2. InputStream inputStream = getClass().getClassLoader().getResourceAsStream(propFileName);
+        3. InputStream inputStream = this.getClass().getResourceAsStream(“asdf.properties”);
+        4. InputStream inputStream = getClass().getResource("images/logo.png");
+        4. FileInputStream inputStream = new FileInputStream("src/main/resources/config.properties");
+        "src/main/resources/db.properties"
+        */
+        try (InputStream inputStream = UserService.class.getClassLoader().getResourceAsStream("db.properties");) {
             properties.load(inputStream);
             typeDAO daotype = typeDAO.valueOf(properties.getProperty("daotype"));
+            System.out.println(daotype);
             switch (daotype) {
                 case JDBC:
                     userDAOFactory = new RealizationJdbcDAO();
