@@ -4,7 +4,6 @@ import model.User;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import util.HibernateSessionFactory;
-
 import java.util.List;
 
 public class UserHibernateDAO implements UserDAO<User> {
