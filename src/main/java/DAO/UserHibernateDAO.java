@@ -11,7 +11,9 @@ public class UserHibernateDAO implements UserDAO<User> {
 
     @Override
     public List<User> getAll() {
-        return null;
+        Session session = HibernateSessionFactory.getSessionFactory().openSession();
+        String hql = "From " + User.class.getSimpleName();
+        return session.createQuery(hql).list();
     }
 
     @Override
