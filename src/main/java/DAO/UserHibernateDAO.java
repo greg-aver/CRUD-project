@@ -12,7 +12,9 @@ public class UserHibernateDAO implements UserDAO<User> {
     public List<User> getAll() {
         Session session = HibernateSessionFactory.getSessionFactory().openSession();
         String hql = "From " + User.class.getSimpleName();
-        return session.createQuery(hql).list();
+        List <User> users = session.createQuery(hql).list();
+        session.close();
+        return users;
     }
 
     @Override
