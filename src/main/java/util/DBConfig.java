@@ -1,11 +1,9 @@
 package util;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Setter
-@NoArgsConstructor
 @Getter
 public class DBConfig {
     private String url;
@@ -15,4 +13,16 @@ public class DBConfig {
     private String dialect;
     private String hbm2ddl;
     private String show_sql;
+    private String daotype;
+
+    private static DBConfig dbConfig;
+
+    public static DBConfig getDBConfig() {
+        if (dbConfig == null) {
+            dbConfig = new DBConfig();
+        }
+        return dbConfig;
+    }
+
+    private DBConfig() {}
 }

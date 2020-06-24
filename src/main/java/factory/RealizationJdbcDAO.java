@@ -8,6 +8,6 @@ import util.DBHelper;
 public class RealizationJdbcDAO extends UserDAOFactory {
     @Override
     public UserDAO<User> realizationDAO() {
-        return UserJdbcDAO.getUserJdbcDAO(DBHelper.getDbHelper().getConnection());
+        return UserJdbcDAO.getUserJdbcDAO(DBHelper.getConnection());
     }
 }

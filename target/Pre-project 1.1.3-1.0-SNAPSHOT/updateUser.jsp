@@ -11,7 +11,7 @@
     <title>Update</title>
 </head>
 <body>
-</form><form method="post" action="users/update">
+</form><form method="post" action="user/update">
     <b>Update user with id: <%= id %></b>
     <input name="id" type="hidden" value="<%= id %>">
     <input required name="name" type="text" placeholder="<%= user.getName() %>">

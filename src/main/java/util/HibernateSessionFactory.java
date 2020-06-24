@@ -17,7 +17,7 @@ public class HibernateSessionFactory {
     }
 
     private static SessionFactory createSessionFactory() {
-        Configuration configuration = DBHelper.getDbHelper().getConfiguration();
+        Configuration configuration = DBHelper.getConfiguration();
         StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties());
         return configuration.buildSessionFactory(builder.build());
     }
